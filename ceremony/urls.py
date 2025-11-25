@@ -17,4 +17,5 @@ urlpatterns = [
     # Stage front-end
     path('stage/control/', views.stage_control, name='stage_control'),
     path('stage/display/', views.stage_display, name='stage_display'),
+    path("current-student-api/", views.current_student_api, name="current_student_api"),
 ]

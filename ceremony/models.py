@@ -142,8 +142,6 @@ class Graduate(models.Model):
                     pass
 
 
-
-
 class StageState(models.Model):
     """Simple singleton model to track which graduate is currently on stage."""
     current_graduate = models.ForeignKey(

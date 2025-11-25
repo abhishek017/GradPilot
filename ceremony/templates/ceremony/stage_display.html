@@ -185,8 +185,6 @@
     }
   </style>
 
-  <!-- Auto-refresh for next student -->
-  <meta http-equiv="refresh" content="3">
 </head>
 <body>
 
@@ -209,18 +207,14 @@
 
 <div class="wrapper">
   {% if current %}
-    {% if current.photo %}
-      <img src="{{ current.photo.url }}"
-           style="max-height:45vh; border-radius:20px; margin-bottom:20px;">
-    {% else %}
-      <img src="{% static 'ceremony/default_silhouette_grey.png' %}"
-           style="max-height:45vh; border-radius:20px; margin-bottom:20px;">
-    {% endif %}
-    <div class="name">{{ current.display_name }}</div>
-    <div class="meta">ID: {{ current.student_id }}</div>
+    <img id="student-photo" src="{% if current.photo %}{{ current.photo.url }}{% else %}{% static 'ceremony/default_silhouette_grey.png' %}{% endif %}"
+        style="max-height:45vh; border-radius:20px; margin-bottom:20px;">
+
+    <div class="name" id="student-name">{{ current.display_name }}</div>
+    <div class="meta" id="student-meta">ID: {{ current.student_id }}</div>
   {% else %}
-    <div class="name">Graduation Ceremony</div>
-    <div class="meta">Brighton College</div>
+    <div class="name" id="student-name">Graduation Ceremony</div>
+    <div class="meta" id="student-meta">Brighton College</div>
   {% endif %}
 </div>
 
@@ -275,6 +269,35 @@
   <div class="sparkle s3" style="right: 16%; animation-delay: 2.3s; animation-duration: 7.0s;"></div>
   <div class="sparkle s2" style="right: 26%; animation-delay: 0.5s; animation-duration: 6.9s;"></div>
 </div>
+
+<script>
+  let lastID = null;
+
+  function checkUpdate() {
+    fetch("{% url 'current_student_api' %}")
+      .then(response => response.json())
+      .then(data => {
+        if (data.id && data.id !== lastID) {
+          lastID = data.id;
+
+          // Update fields without refreshing the page
+          document.getElementById("student-name").innerText = data.name;
+          document.getElementById("student-meta").innerText = "ID: " + data.student_id;
+
+          if (data.photo) {
+            document.getElementById("student-photo").src = data.photo;
+          } else {
+            document.getElementById("student-photo").src = "{% static 'ceremony/default_silhouette_grey.png' %}";
+          }
+        }
+      })
+      .catch(error => console.log(error));
+  }
+
+  // Check every 1000ms (1 second)
+  setInterval(checkUpdate, 1000);
+</script>
+
 
 </body>
 </html>

@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.views.decorators.http import require_http_methods
@@ -230,3 +231,17 @@ def stage_display(request):
     state = StageState.get_solo()
     current = state.current_graduate
     return render(request, 'ceremony/stage_display.html', {'current': current})
+
+
+def current_student_api(request):
+    state = StageState.get_solo()
+    g = state.current_graduate
+    if g is None:
+        return JsonResponse({"id": None})
+        
+    return JsonResponse({
+        "id": g.id,
+        "name": g.display_name,
+        "student_id": g.student_id,
+        "photo": g.photo.url if g.photo else None
+    })
