@@ -25,8 +25,12 @@ def grad_admin(request):
     gown_collected = stats["gown_collected"]
     gown_returned = stats["gown_returned"]
     total_gown_to_return = stats["total_gown_to_return"]
-    
+
     graduates = Graduate.objects.all().order_by('unique_id')
+    # sorting the table
+    sort = request.GET.get("sort", "name")
+    if sort in ["attended", "-attended", "gown_collected", "-gown_collected", "unique_id", "-unique_id"]:
+        graduates = graduates.order_by(sort)
 
     context = {
         'total': total,

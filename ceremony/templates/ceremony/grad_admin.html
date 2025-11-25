@@ -3,31 +3,23 @@
 <h1 class="h4 mb-3">Graduation Admin Dashboard</h1>
 
 <div class="row g-3 mb-4">
-	<div class="col-6 col-md-3">
-		<div class="card text-center">
-			<div class="card-body">
-				<div class="text-muted small">Total students</div>
-				<div class="h4 mb-0">{{ total }}</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-6 col-md-3">
+	<div class="col-6 col-md-4">
 		<div class="card text-center">
 			<div class="card-body">
 				<div class="text-muted small">Checked in</div>
-				<div class="h4 mb-0">{{ checked_in }}</div>
+				<div class="h4 mb-0">{{ checked_in }} / {{total }}</div>
 			</div>
 		</div>
 	</div>
-	<div class="col-6 col-md-3">
+	<div class="col-6 col-md-4">
 		<div class="card text-center">
 			<div class="card-body">
 				<div class="text-muted small">Gown collected</div>
-				<div class="h4 mb-0">{{ gown_collected }}</div>
+				<div class="h4 mb-0">{{ gown_collected }} / {{ total }}</div>
 			</div>
 		</div>
 	</div>
-	<div class="col-6 col-md-3">
+	<div class="col-6 col-md-4">
 		<div class="card text-center">
 			<div class="card-body">
 				<div class="text-muted small">Gown Returned</div>
@@ -44,10 +36,9 @@
 			<tr>
 				<th>Name</th>
 				<th>Student ID</th>
-				<th>Grad ID</th>
-				<th class="text-center">Attended</th>
-				<th class="text-center">Gown collected</th>
-				<th class="text-center">Stage order</th>
+				<th><a href="?sort=unique_id" class="text-decoration-none text-black">Grad ID ↑↓</a></th>
+				<th class="text-center"><a class="text-decoration-none text-black" href="?sort=-attended">Attended ↑↓</a></th>
+				<th class="text-center"><a href="?sort=-gown_collected" class="text-decoration-none text-black">Gown collected ↑↓</a></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -67,9 +58,6 @@
 				<td class="text-center">
 					{% if g.gown_collected %}<span class="badge bg-success">Yes</span>{% else %}<span
 						class="badge bg-secondary">No</span>{% endif %}
-				</td>
-				<td class="text-center">
-					{% if g.presentation_order %}{{ g.presentation_order }}{% else %}-{% endif %}
 				</td>
 			</tr>
 			{% empty %}
