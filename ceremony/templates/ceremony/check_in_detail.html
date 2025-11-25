@@ -1,0 +1,59 @@
+{% extends "ceremony/base.html" %}
+{% load static %}
+{% block content %}
+<h1 class="h5 mb-3">Check-in: {{ graduate.name }}</h1>
+
+<form method="post" class="mb-5">{% csrf_token %}
+	<div class="card mb-3">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-2">
+					<div class="mb-3">
+						<!-- Preview container -->
+						<div class="mt-2">
+							<img id="photo-preview"
+								src="{% if graduate.photo %}{{ graduate.photo.url }}{% else %}{% static 'ceremony/default_silhouette.png' %}{% endif %}"
+								class="img-fluid rounded" style="max-width:180px; border:1px solid #ddd;">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<p class="mb-1"><strong>Student ID:</strong> {{ graduate.student_id }}</p>
+					<p class="mb-1"><strong>Email:</strong> {{ graduate.email }}</p>
+					<p class="mb-1"><strong>Payment:</strong> {{ graduate.payment_status }}</p>
+					<p class="mb-1"><strong>Gown:</strong> {{ graduate.gown_option }} ({{ graduate.gown_size }})</p>
+					<p class="mb-0"><strong>Guests:</strong> {{ graduate.additional_guests }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-check form-switch mb-3">
+		{{ form.attended }}
+		<label class="form-check-label ms-2">Student has arrived (Attended)</label>
+	</div>
+
+	<div class="row g-2 mb-3">
+		<div class="col-4">
+			<label class="form-label">Seat row</label>
+			{{ form.seat_row }}
+		</div>
+		<div class="col-4">
+			<label class="form-label">Seat no.</label>
+			{{ form.seat_number }}
+		</div>
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Staff initials (optional)</label>
+		{{ form.staff_initials }}
+		<div class="form-text">{{ form.staff_initials.help_text }}</div>
+	</div>
+
+	<div class="fixed-bottom-bar">
+		<button type="submit" class="btn btn-success w-100 btn-lg">
+			Save &amp; return to search
+		</button>
+	</div>
+</form>
+{% endblock %}

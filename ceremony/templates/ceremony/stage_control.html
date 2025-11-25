@@ -1,0 +1,73 @@
+{% extends "ceremony/base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">Stage Control</h1>
+
+<!-- Reset screen display button -->
+<form method="post" class="mb-3 d-flex justify-content-end">
+  {% csrf_token %}
+  <button type="submit" name="reset" value="1" class="btn btn-outline-danger btn-sm">
+    Reset screen display
+  </button>
+</form>
+
+<div class="card mb-3">
+  <div class="card-body text-center">
+    <div class="text-muted small mb-1">Current on screen</div>
+    {% if current %}
+      <div class="h3 mb-1">{{ current.display_name }}</div>
+      <div class="mb-1">ID: {{ current.student_id }}</div>
+      {% if current.course_name %}
+        <div class="text-muted">{{ current.course_name }}</div>
+      {% endif %}
+      <div class="small text-muted">Order: {{ current.presentation_order }}</div>
+    {% else %}
+      <div class="h5 mb-0">No graduate selected yet.</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- NEXT button -->
+<form method="post" class="mb-4">
+  {% csrf_token %}
+  <button type="submit" name="next" value="1" class="btn btn-primary w-100 btn-lg">
+    Next student
+  </button>
+</form>
+
+<h2 class="h6">All attended (in order)</h2>
+<div class="list-group">
+  {% for g in attended_grads %}
+    <div class="list-group-item d-flex justify-content-between align-items-center {% if current and current.pk == g.pk %}list-group-item-info{% endif %}">
+      <div>
+        <div class="fw-semibold">{{ g.display_name }}</div>
+        <div class="small text-muted">Order {{ g.student_id }} • {{ g.unique_id }}</div>
+      </div>
+      <div class="d-flex align-items-center gap-1">
+        <!-- Move up -->
+        <form method="post" class="d-inline">
+          {% csrf_token %}
+          <input type="hidden" name="grad_id" value="{{ g.pk }}">
+          <button type="submit" name="move_up" value="1" class="btn btn-sm btn-outline-secondary" title="Move up">
+            ↑
+          </button>
+        </form>
+
+        <!-- Move down -->
+        <form method="post" class="d-inline">
+          {% csrf_token %}
+          <input type="hidden" name="grad_id" value="{{ g.pk }}">
+          <button type="submit" name="move_down" value="1" class="btn btn-sm btn-outline-secondary" title="Move down">
+            ↓
+          </button>
+        </form>
+
+        {% if current and current.pk == g.pk %}
+          <span class="badge bg-primary ms-2">On screen</span>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <div class="list-group-item">No attended students yet.</div>
+  {% endfor %}
+</div>
+{% endblock %}

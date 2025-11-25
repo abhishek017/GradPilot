@@ -1,0 +1,68 @@
+{% extends "ceremony/base.html" %}
+{% load static %}
+{% block content %}
+<h1 class="h5 mb-3">Gown: {{ graduate.name }}</h1>
+
+<div class="card mb-3">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-md-2">
+				<div class="mb-3">
+					<!-- Preview container -->
+					<div class="mt-2">
+						<img id="photo-preview"
+							src="{% if graduate.photo %}{{ graduate.photo.url }}{% else %}{% static 'ceremony/default_silhouette.png' %}{% endif %}"
+							class="img-fluid rounded" style="max-width:180px; border:1px solid #ddd;">
+					</div>
+				</div>
+			</div>
+			<div class="col-md-8">
+				<p class="mb-1"><strong>Student ID:</strong> {{ graduate.student_id }}</p>
+				<p class="mb-1"><strong>Attended:</strong>
+					{% if graduate.attended %}
+					<span class="badge bg-success">Yes</span>
+					{% else %}
+					<span class="badge bg-secondary">No</span>
+					{% endif %}
+				</p>
+				<p class="mb-1"><strong>Gown option:</strong> {{ graduate.gown_option }}</p>
+				<p class="mb-0"><strong>Current size:</strong> {{ graduate.gown_size }}</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<form method="post" class="mb-5">
+	{% csrf_token %}
+
+	<div class="mb-3">
+		<label class="form-label">Gown size</label>
+		{{ form.gown_size }}
+	</div>
+
+	<div class="form-check form-switch mb-2">
+		{{ form.gown_collected }}
+		<label class="form-check-label ms-2">Gown collected</label>
+	</div>
+
+	{% if graduate.needs_to_return_gown %}
+		<div class="form-check form-switch mb-3">
+			{{ form.gown_returned }}
+			<label class="form-check-label ms-2">Gown returned</label>
+		</div>
+	{% else %}
+		<span class="badge bg-info">No need to return, gown was purchased</span>
+	{% endif %}
+
+	<div class="mb-3">
+		<label class="form-label">Notes</label>
+		{{ form.gown_notes }}
+	</div>
+
+	<div class="fixed-bottom-bar">
+		<button type="submit" class="btn btn-success w-100 btn-lg">
+			Save &amp; return to search
+		</button>
+	</div>
+</form>
+{% endblock %}

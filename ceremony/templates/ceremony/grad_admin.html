@@ -1,0 +1,83 @@
+{% extends "ceremony/base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">Graduation Admin Dashboard</h1>
+
+<div class="row g-3 mb-4">
+	<div class="col-6 col-md-3">
+		<div class="card text-center">
+			<div class="card-body">
+				<div class="text-muted small">Total students</div>
+				<div class="h4 mb-0">{{ total }}</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3">
+		<div class="card text-center">
+			<div class="card-body">
+				<div class="text-muted small">Checked in</div>
+				<div class="h4 mb-0">{{ checked_in }}</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3">
+		<div class="card text-center">
+			<div class="card-body">
+				<div class="text-muted small">Gown collected</div>
+				<div class="h4 mb-0">{{ gown_collected }}</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-6 col-md-3">
+		<div class="card text-center">
+			<div class="card-body">
+				<div class="text-muted small">Gown Returned</div>
+				<div class="h4 mb-0">{{ gown_returned }} / {{ total_gown_to_return }}</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h2 class="h6 mt-3 mb-2">All students</h2>
+<div class="table-responsive">
+	<table class="table table-bordered table-hover table-striped align-middle">
+		<thead class="table-light">
+			<tr>
+				<th>Name</th>
+				<th>Student ID</th>
+				<th>Grad ID</th>
+				<th class="text-center">Attended</th>
+				<th class="text-center">Gown collected</th>
+				<th class="text-center">Stage order</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for g in graduates %}
+			<tr>
+				<td>
+					<a href="{% url 'student_detail' g.pk %}" class="text-decoration-none">
+						{% include "components/user_profile.html" with graduate=g %}
+					</a>
+				</td>
+				<td>{{ g.student_id }}</td>
+				<td>{{ g.unique_id }}</td>
+				<td class="text-center">
+					{% if g.attended %}<span class="badge bg-success">Yes</span>{% else %}<span
+						class="badge bg-secondary">No</span>{% endif %}
+				</td>
+				<td class="text-center">
+					{% if g.gown_collected %}<span class="badge bg-success">Yes</span>{% else %}<span
+						class="badge bg-secondary">No</span>{% endif %}
+				</td>
+				<td class="text-center">
+					{% if g.presentation_order %}{{ g.presentation_order }}{% else %}-{% endif %}
+				</td>
+			</tr>
+			{% empty %}
+			<tr>
+				<td colspan="6" class="text-center text-muted">No students yet.</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

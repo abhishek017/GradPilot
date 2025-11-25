@@ -1,0 +1,104 @@
+{% extends "ceremony/base.html" %}
+{% block content %}
+<h1 class="h4 mb-3">Gown Desk</h1>
+
+<form method="get" class="mb-3">
+  <div class="input-group input-group-lg">
+    <input
+      type="text"
+      id="gown-search"
+      name="query"
+      class="form-control form-control-lg"
+      placeholder="Search by Student ID, name, or email"
+      autocomplete="off"
+    >
+    <button type="submit" class="btn btn-primary">
+      Search
+    </button>
+  </div>
+  <div class="form-text">Search by Student ID, name, or email.</div>
+</form>
+
+
+{% if graduates %}
+  <div class="list-group">
+    {% for g in graduates %}
+      <a href="{% url 'gown_detail' g.pk %}" class="list-group-item list-group-item-action tap-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">{{ g.name }}</div>
+            <div class="small text-muted">
+              ID: {{ g.student_id }} • {{ g.gown_option }} ({{ g.gown_size }})
+            </div>
+          </div>
+          <div class="text-end">
+            {% if g.gown_collected %}
+              <span class="badge bg-success">Collected</span>
+            {% else %}
+              <span class="badge bg-secondary">Not collected</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% elif form.is_bound %}
+  <div class="alert alert-warning">No students found.</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+$(document).ready(function() {
+    console.log("jQuery ready – starting autocomplete");
+
+    const CHECKIN_STUDENTS = [
+      {% for g in all_grads %}
+        {
+          id: {{ g.pk }},
+          name: "{{ g.display_name|default:g.name|escapejs }}",
+          student_id: "{{ g.student_id|escapejs }}",
+          email: "{{ g.email|escapejs }}",
+          url: "{% url 'gown_detail' g.pk %}"
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ];
+
+    $("#gown-search").autocomplete({
+        minLength: 1,
+        source: function(request, response) {
+            const term = request.term.toLowerCase();
+
+            const matches = CHECKIN_STUDENTS.filter(s =>
+                s.name.toLowerCase().includes(term) ||
+                s.student_id.toLowerCase().includes(term) ||
+                s.email.toLowerCase().includes(term)
+            ).slice(0, 20);
+
+            response(matches.map(s => ({
+                label: s.name,
+                value: s.name,
+                student: s
+            })));
+        },
+        select: function(event, ui) {
+            window.location.href = ui.item.student.url;
+            return false;
+        }
+    })
+    .autocomplete("instance")._renderItem = function (ul, item) {
+        const s = item.student;
+        return $("<li>")
+          .append(`
+              <div class="p-2">
+                <div><strong>${s.name}</strong></div>
+                <div class='text-muted small'>ID: ${s.student_id}</div>
+                <div class='text-muted small'>${s.email}</div>
+              </div>
+          `).appendTo(ul);
+    };
+});
+</script>
+{% endblock %}

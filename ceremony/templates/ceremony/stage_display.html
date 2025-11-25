@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Stage Display</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100%;
+      text-align: center;
+    }
+    .name {
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .meta {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    @media (max-width: 768px) {
+      .name { font-size: 2.5rem; }
+      .meta { font-size: 1.25rem; }
+    }
+  </style>
+  <meta http-equiv="refresh" content="3">
+</head>
+<body>
+<div class="wrapper">
+  {% if current %}
+    {% if current.photo %}
+      <img src="{{ current.photo.url }}"
+          style="max-height:45vh; border-radius:20px; margin-bottom:20px;">
+    {% else %}
+      <img src="{% static 'ceremony/default_silhouette_grey.png' %}"
+          style="max-height:45vh; border-radius:20px; margin-bottom:20px;">
+    {% endif %}
+    <div class="name">{{ current.display_name }}</div>
+    <div class="meta">ID: {{ current.student_id }}</div>
+  {% else %}
+    <div class="name">Graduation Ceremony</div>
+    <div class="meta">Brighton College </div>
+  {% endif %}
+</div>
+</body>
+</html>

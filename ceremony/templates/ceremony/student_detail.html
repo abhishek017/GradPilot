@@ -1,0 +1,125 @@
+{% extends "ceremony/base.html" %}
+{% load static %}
+{% block content %}
+<h1 class="h5 mb-3">Student Detail: {{ graduate.name }}</h1>
+
+<form method="post" class="mb-5" enctype="multipart/form-data">{% csrf_token %}
+	<div class="card mb-3">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="mb-3">
+						<!-- Preview container -->
+						<div class="mt-2">
+							<img id="photo-preview"
+								src="{% if graduate.photo %}{{ graduate.photo.url }}{% else %}{% static 'ceremony/default_silhouette.png' %}{% endif %}"
+								class="img-fluid rounded" style="max-width:180px; border:1px solid #ddd;">
+						</div>
+						<label class="form-label">Student Photo</label>
+						{{ form.photo }}
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="row">
+
+						<div class="col-md-6 mb-2">
+							<strong>Student ID:</strong> {{ graduate.student_id }}
+						</div>
+						<div class="col-md-6 mb-2">
+							<strong>Email:</strong> {{ graduate.email }}
+						</div>
+						<div class="col-md-6 mb-2">
+							<strong>Unique ID:</strong> {{ graduate.unique_id }}
+						</div>
+						<div class="col-md-6 mb-2">
+							<strong>Payment status:</strong> {{ graduate.payment_status }}
+						</div>
+						<div class="col-md-6 mb-2">
+							<strong>Guests:</strong> {{ graduate.additional_guests }}
+						</div>
+						<div class="col-md-6 mb-2">
+							<strong>Total amount:</strong> {{ graduate.total_amount }}
+						</div>
+						<div class="col-md-12 mb-2">
+							<strong>Gown option:</strong> {{ graduate.gown_option }}
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<h2 class="h6 mt-3">Attendance</h2>
+	<div class="form-check form-switch mb-2">
+		{{ form.attended }}
+		<label class="form-check-label ms-2">Checked in</label>
+	</div>
+
+	<div class="row g-2 mb-3">
+		<div class="col-4">
+			<label class="form-label">Seat row</label>
+			{{ form.seat_row }}
+		</div>
+		<div class="col-4">
+			<label class="form-label">Seat number</label>
+			{{ form.seat_number }}
+		</div>
+	</div>
+
+	<h2 class="h6 mt-3">Gown &amp; Notes</h2>
+
+	<div class="mb-3">
+		<label class="form-label">Gown size</label>
+		{{ form.gown_size }}
+	</div>
+
+	<div class="form-check form-switch mb-2">
+		{{ form.gown_collected }}
+		<label class="form-check-label ms-2">Gown collected</label>
+	</div>
+
+	{% if graduate.needs_to_return_gown %}
+		<div class="form-check form-switch mb-3">
+			{{ form.gown_returned }}
+			<label class="form-check-label ms-2">Gown returned</label>
+		</div>
+	{% else %}
+		<span class="badge bg-info">No need to return, gown was purchased</span>
+	{% endif %}
+
+	<div class="mb-3">
+		<label class="form-label">Notes</label>
+		{{ form.gown_notes }}
+	</div>
+
+	<div class="fixed-bottom-bar">
+		<button type="submit" class="btn btn-success w-100 btn-lg">
+			Save &amp; back to Grad Admin
+		</button>
+	</div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		const input = document.querySelector("input[name='photo']");
+		const preview = document.getElementById("photo-preview");
+
+		input.addEventListener("change", (event) => {
+			const file = event.target.files[0];
+			if (!file) return;
+
+			const reader = new FileReader();
+			reader.onload = e => {
+				preview.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
+		});
+	});
+</script>
+
+{% endblock %}
