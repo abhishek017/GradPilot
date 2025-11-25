@@ -284,7 +284,7 @@
 
           // Update fields without refreshing the page
           document.getElementById("student-name").innerText = data.name;
-          document.getElementById("student-meta").innerText = "ID: " + data.student_id;
+          document.getElementById("student-meta").innerText = data.qualification;
 
           if (data.photo) {
             document.getElementById("student-photo").src = data.photo;

@@ -242,6 +242,6 @@ def current_student_api(request):
     return JsonResponse({
         "id": g.id,
         "name": g.display_name,
-        "student_id": g.student_id,
+        "qualification": g.qualification,
         "photo": g.photo.url if g.photo else None
     })
