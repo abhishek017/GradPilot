@@ -12,6 +12,7 @@ class Graduate(models.Model):
     submission_date = models.DateTimeField(null=True, blank=True)
     name = models.CharField(max_length=255)
     email = models.EmailField()
+    qualification = models.CharField(max_length=100, null=True, blank=True)
     student_id = models.CharField(max_length=50)
     payment_status = models.CharField(max_length=50, blank=True)
     gown_option = models.CharField(

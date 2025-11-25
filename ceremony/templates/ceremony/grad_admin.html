@@ -36,6 +36,7 @@
 			<tr>
 				<th>Name</th>
 				<th>Student ID</th>
+				<th>Qualification</th>
 				<th><a href="?sort=unique_id" class="text-decoration-none text-black">Grad ID ↑↓</a></th>
 				<th class="text-center"><a class="text-decoration-none text-black" href="?sort=-attended">Attended ↑↓</a></th>
 				<th class="text-center"><a href="?sort=-gown_collected" class="text-decoration-none text-black">Gown collected ↑↓</a></th>
@@ -50,6 +51,7 @@
 					</a>
 				</td>
 				<td>{{ g.student_id }}</td>
+				<td>{{ g.qualification }}</td>
 				<td>{{ g.unique_id }}</td>
 				<td class="text-center">
 					{% if g.attended %}<span class="badge bg-success">Yes</span>{% else %}<span
