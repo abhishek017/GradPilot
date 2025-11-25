@@ -154,7 +154,6 @@ def gown_detail(request, pk):
 
 
 # --------- 3) STAGE DISPLAY (CONTROL + SCREEN) --------- #
-
 @login_required
 def stage_control(request):
     """Back-stage control panel with NEXT button and reordering."""
@@ -167,21 +166,6 @@ def stage_control(request):
             gown_collected=True
         ).order_by('unique_id')
     attended_grads = list(get_attended_queryset())
-
-    # def normalize_orders():
-    #     """Ensure presentation_order is a dense 1..N sequence for attended grads."""
-    #     changed = False
-    #     for idx, g in enumerate(attended_grads, start=1):
-    #         if g.presentation_order != idx:
-    #             g.presentation_order = idx
-    #             g.save(update_fields=['presentation_order'])
-    #             changed = True
-    #     if changed:
-    #         # refresh list after normalization
-    #         return list(
-    #             Graduate.objects.filter(attended=True).order_by('presentation_order', 'name')
-    #         )
-    #     return attended_grads
 
     if request.method == 'POST':
         # Reset screen display
@@ -199,35 +183,7 @@ def stage_control(request):
             except Graduate.DoesNotExist:
                 target = None
 
-        # # Normalize before any ordering operations
-        # attended = normalize_orders()
-
         if target and target.attended and target.gown_collected:
-            # # Move up
-            # if 'move_up' in request.POST:
-            #     for i, g in enumerate(attended):
-            #         if g.pk == target.pk and i > 0:
-            #             above = attended[i - 1]
-            #             # swap orders
-            #             g_order, above_order = g.presentation_order, above.presentation_order
-            #             g.presentation_order, above.presentation_order = above_order, g_order
-            #             g.save(update_fields=['presentation_order'])
-            #             above.save(update_fields=['presentation_order'])
-            #             break
-            #     return redirect('stage_control')
-
-            # # Move down
-            # if 'move_down' in request.POST:
-            #     for i, g in enumerate(attended):
-            #         if g.pk == target.pk and i < len(attended) - 1:
-            #             below = attended[i + 1]
-            #             g_order, below_order = g.presentation_order, below.presentation_order
-            #             g.presentation_order, below.presentation_order = below_order, g_order
-            #             g.save(update_fields=['presentation_order'])
-            #             below.save(update_fields=['presentation_order'])
-            #             break
-            #     return redirect('stage_control')
-
             # Show on screen / start from here (both behave the same)
             if 'show' in request.POST or 'start_from_here' in request.POST:
                 state.current_graduate = target
@@ -267,7 +223,6 @@ def stage_control(request):
     }
     return render(request, 'ceremony/stage_control.html', context)        
 
-        
 
 @login_required
 def stage_display(request):
