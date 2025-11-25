@@ -5,6 +5,7 @@ from .models import Graduate, StageState
 from .forms import SearchForm, CheckInForm, GownForm, StudentDetailForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+from django.contrib import messages
 
 
 # --------- GRAD ADMIN DASHBOARD --------- #
@@ -90,8 +91,11 @@ def check_in_detail(request, pk):
             staff_initials = form.cleaned_data.get('staff_initials') or ''
             if obj.attended and not obj.check_in_time:
                 obj.mark_attended(staff_initials)
+                action = 'Checked In'
             else:
                 obj.save()
+                action = "Updated"
+            messages.success(request, f"{obj.display_name} has been {action} successfully.")
             return redirect('check_in_search')
     else:
         form = CheckInForm(instance=graduate)
@@ -132,7 +136,8 @@ def gown_detail(request, pk):
     if request.method == 'POST':
         form = GownForm(request.POST, instance=graduate)
         if form.is_valid():
-            form.save()
+            obj = form.save()
+            messages.success(request, f"{obj.display_name}'s gown collection status is updated.")
             return redirect('gown_search')
     else:
         form = GownForm(instance=graduate)
